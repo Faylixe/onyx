@@ -1,10 +1,10 @@
 from typing import cast
 
-from danswer.configs.constants import DanswerRedisLocks
 from onyx.configs.constants import KV_SETTINGS_KEY
+from onyx.configs.constants import OnyxRedisLocks
 from onyx.key_value_store.factory import get_kv_store
 from onyx.key_value_store.interface import KvKeyNotFoundError
-from danswer.redis.redis_pool import get_redis_client
+from onyx.redis.redis_pool import get_redis_client
 from onyx.server.settings.models import Settings
 from shared_configs.contextvars import CURRENT_TENANT_ID_CONTEXTVAR
 
@@ -25,7 +25,7 @@ def store_settings(settings: Settings) -> None:
         tenant_id = CURRENT_TENANT_ID_CONTEXTVAR.get()
         redis_client = get_redis_client(tenant_id=tenant_id)
         redis_client.set(
-            DanswerRedisLocks.ANONYMOUS_USER_ENABLED,
+            OnyxRedisLocks.ANONYMOUS_USER_ENABLED,
             "1" if settings.anonymous_user_enabled else "0",
         )
 

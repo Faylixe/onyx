@@ -14,7 +14,7 @@ class SettingsManager:
     @staticmethod
     def get_settings(
         user_performing_action: DATestUser | None = None,
-    ) -> Dict[str, Any]:
+    ) -> tuple[Dict[str, Any], str]:
         headers = (
             user_performing_action.headers
             if user_performing_action
@@ -39,7 +39,7 @@ class SettingsManager:
     def update_settings(
         settings: DATestSettings,
         user_performing_action: DATestUser | None = None,
-    ) -> Dict[str, Any]:
+    ) -> tuple[Dict[str, Any], str]:
         headers = (
             user_performing_action.headers
             if user_performing_action

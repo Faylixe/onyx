@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from onyx.auth.users import current_admin_user
 from onyx.auth.users import current_curator_or_admin_user
 from onyx.auth.users import current_limited_user
-from danswer.auth.users import current_second_level_limited_user
+from onyx.auth.users import current_second_level_limited_user
 from onyx.auth.users import current_user
 from onyx.chat.prompt_builder.utils import build_dummy_prompt
 from onyx.configs.constants import FileOrigin

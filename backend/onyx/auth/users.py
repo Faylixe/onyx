@@ -5,6 +5,7 @@ from datetime import datetime
 from datetime import timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import cast
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -72,8 +73,8 @@ from onyx.configs.app_configs import WEB_DOMAIN
 from onyx.configs.constants import AuthType
 from onyx.configs.constants import DANSWER_API_KEY_DUMMY_EMAIL_DOMAIN
 from onyx.configs.constants import DANSWER_API_KEY_PREFIX
-from danswer.configs.constants import DanswerRedisLocks
 from onyx.configs.constants import MilestoneRecordType
+from onyx.configs.constants import OnyxRedisLocks
 from onyx.configs.constants import PASSWORD_SPECIAL_CHARS
 from onyx.configs.constants import UNNAMED_KEY_PLACEHOLDER
 from onyx.db.api_key import fetch_user_for_api_key
@@ -151,7 +152,7 @@ def user_needs_to_be_verified() -> bool:
 def anonymous_user_enabled() -> bool | None:
     tenant_id = CURRENT_TENANT_ID_CONTEXTVAR.get()
     redis_client = get_redis_client(tenant_id=tenant_id)
-    anonymous_user_enabled = redis_client.get(DanswerRedisLocks.ANONYMOUS_USER_ENABLED)
+    anonymous_user_enabled = redis_client.get(OnyxRedisLocks.ANONYMOUS_USER_ENABLED)
     return anonymous_user_enabled == b"1"
 
 
@@ -749,7 +750,9 @@ async def current_second_level_limited_user(
 ) -> User | None:
     tenant_id = CURRENT_TENANT_ID_CONTEXTVAR.get()
     redis_client = get_redis_client(tenant_id=tenant_id)
-    anonymous_user_enabled = redis_client.get(DanswerRedisLocks.ANONYMOUS_USER_ENABLED)
+    anonymous_user_enabled = cast(
+        bool, redis_client.get(OnyxRedisLocks.ANONYMOUS_USER_ENABLED)
+    )
     return await double_check_user(user, allow_anonymous_access=anonymous_user_enabled)
 
 
