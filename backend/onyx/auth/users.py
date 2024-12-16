@@ -148,13 +148,14 @@ def user_needs_to_be_verified() -> bool:
     return False
 
 
-def anonymous_user_enabled() -> bool | None:
+def anonymous_user_enabled() -> bool:
     tenant_id = CURRENT_TENANT_ID_CONTEXTVAR.get()
     redis_client = get_redis_client(tenant_id=tenant_id)
     value = redis_client.get(OnyxRedisLocks.ANONYMOUS_USER_ENABLED)
+    assert isinstance(value, bytes)
     if value is None:
         return False
-    return int(value) == 1
+    return int(value.decode("utf-8")) == 1
 
 
 def verify_email_is_invited(email: str) -> None:
@@ -746,7 +747,7 @@ async def current_limited_user(
     return await double_check_user(user)
 
 
-async def current_second_level_limited_user(
+async def current_chat_accesssible_user(
     user: User | None = Depends(optional_user),
 ) -> User | None:
     return await double_check_user(
