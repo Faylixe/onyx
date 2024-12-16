@@ -26,6 +26,7 @@ export default function FunctionalHeader({
   llmOverrideManager,
   documentSidebarToggled,
   toggleUserSettings,
+  hideUserDropdown,
 }: {
   reset?: () => void;
   page: pageType;
@@ -38,6 +39,7 @@ export default function FunctionalHeader({
   onAssistantChange?: (assistant: Persona) => void;
   llmOverrideManager?: LlmOverrideManager;
   toggleUserSettings?: () => void;
+  hideUserDropdown?: boolean;
 }) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -119,8 +121,10 @@ export default function FunctionalHeader({
                 <FiShare2 size="18" />
               </div>
             )}
+
             <div className="mobile:hidden flex my-auto">
               <UserDropdown
+                hideUserDropdown={hideUserDropdown}
                 page={page}
                 toggleUserSettings={toggleUserSettings}
               />

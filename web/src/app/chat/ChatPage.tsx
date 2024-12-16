@@ -242,10 +242,10 @@ export function ChatPage({
           (assistant) => assistant.id === existingChatSessionAssistantId
         )
       : defaultAssistantId !== undefined
-        ? availableAssistants.find(
-            (assistant) => assistant.id === defaultAssistantId
-          )
-        : undefined
+      ? availableAssistants.find(
+          (assistant) => assistant.id === defaultAssistantId
+        )
+      : undefined
   );
   // Gather default temperature settings
   const search_param_temperature = searchParams.get(
@@ -255,12 +255,12 @@ export function ChatPage({
   const defaultTemperature = search_param_temperature
     ? parseFloat(search_param_temperature)
     : selectedAssistant?.tools.some(
-          (tool) =>
-            tool.in_code_tool_id === "SearchTool" ||
-            tool.in_code_tool_id === "InternetSearchTool"
-        )
-      ? 0
-      : 0.7;
+        (tool) =>
+          tool.in_code_tool_id === "SearchTool" ||
+          tool.in_code_tool_id === "InternetSearchTool"
+      )
+    ? 0
+    : 0.7;
 
   const setSelectedAssistantFromId = (assistantId: number) => {
     // NOTE: also intentionally look through available assistants here, so that
@@ -1176,8 +1176,8 @@ export function ChatPage({
     const currentAssistantId = alternativeAssistantOverride
       ? alternativeAssistantOverride.id
       : alternativeAssistant
-        ? alternativeAssistant.id
-        : liveAssistant.id;
+      ? alternativeAssistant.id
+      : liveAssistant.id;
 
     resetInputBar();
     let messageUpdates: Message[] | null = null;
@@ -1660,6 +1660,7 @@ export function ChatPage({
     setShowDocSidebar: setShowHistorySidebar,
     setToggled: removeToggle,
     mobile: settings?.isMobile,
+    isAnonymousUser: user?.is_anonymous_user,
   });
 
   const autoScrollEnabled =
@@ -2208,6 +2209,7 @@ export function ChatPage({
                   currentChatSession={selectedChatSession}
                   documentSidebarToggled={documentSidebarToggled}
                   llmOverrideManager={llmOverrideManager}
+                  hideUserDropdown={user?.is_anonymous_user}
                 />
               )}
 
@@ -2742,23 +2744,15 @@ export function ChatPage({
                               removeDocs={() => {
                                 clearSelectedDocuments();
                               }}
-                              removeFilters={() => {
-                                filterManager.setSelectedSources([]);
-                                filterManager.setSelectedTags([]);
-                                filterManager.setSelectedDocumentSets([]);
-                                setDocumentSidebarToggled(false);
-                              }}
                               showConfigureAPIKey={() =>
                                 setShowApiKeyModal(true)
                               }
                               chatState={currentSessionChatState}
                               stopGenerating={stopGenerating}
-                              openModelSettings={() => setSettingsToggled(true)}
                               showDocs={() => setDocumentSelection(true)}
                               selectedDocuments={selectedDocuments}
                               // assistant stuff
                               selectedAssistant={liveAssistant}
-                              setSelectedAssistant={onAssistantChange}
                               setAlternativeAssistant={setAlternativeAssistant}
                               alternativeAssistant={alternativeAssistant}
                               // end assistant stuff
@@ -2766,7 +2760,6 @@ export function ChatPage({
                               setMessage={setMessage}
                               onSubmit={onSubmit}
                               filterManager={filterManager}
-                              llmOverrideManager={llmOverrideManager}
                               files={currentMessageFiles}
                               setFiles={setCurrentMessageFiles}
                               toggleFilters={
@@ -2774,7 +2767,6 @@ export function ChatPage({
                               }
                               handleFileUpload={handleImageUpload}
                               textAreaRef={textAreaRef}
-                              chatSessionId={chatSessionIdRef.current!}
                             />
                             {enterpriseSettings &&
                               enterpriseSettings.custom_lower_disclaimer_content && (
