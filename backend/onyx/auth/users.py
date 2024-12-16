@@ -5,7 +5,6 @@ from datetime import datetime
 from datetime import timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import cast
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -152,8 +151,10 @@ def user_needs_to_be_verified() -> bool:
 def anonymous_user_enabled() -> bool | None:
     tenant_id = CURRENT_TENANT_ID_CONTEXTVAR.get()
     redis_client = get_redis_client(tenant_id=tenant_id)
-    anonymous_user_enabled = redis_client.get(OnyxRedisLocks.ANONYMOUS_USER_ENABLED)
-    return anonymous_user_enabled == b"1"
+    value = redis_client.get(OnyxRedisLocks.ANONYMOUS_USER_ENABLED)
+    if value is None:
+        return False
+    return int(value) == 1
 
 
 def verify_email_is_invited(email: str) -> None:
@@ -748,12 +749,9 @@ async def current_limited_user(
 async def current_second_level_limited_user(
     user: User | None = Depends(optional_user),
 ) -> User | None:
-    tenant_id = CURRENT_TENANT_ID_CONTEXTVAR.get()
-    redis_client = get_redis_client(tenant_id=tenant_id)
-    anonymous_user_enabled = cast(
-        bool, redis_client.get(OnyxRedisLocks.ANONYMOUS_USER_ENABLED)
+    return await double_check_user(
+        user, allow_anonymous_access=anonymous_user_enabled()
     )
-    return await double_check_user(user, allow_anonymous_access=anonymous_user_enabled)
 
 
 async def current_user(

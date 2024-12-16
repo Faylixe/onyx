@@ -5,9 +5,9 @@ from fastapi.dependencies.models import Dependant
 from starlette.routing import BaseRoute
 
 from onyx.auth.users import current_admin_user
+from onyx.auth.users import current_chat_accesssible_user
 from onyx.auth.users import current_curator_or_admin_user
 from onyx.auth.users import current_limited_user
-from onyx.auth.users import current_second_level_limited_user
 from onyx.auth.users import current_user
 from onyx.auth.users import current_user_with_expired_token
 from onyx.configs.app_configs import APP_API_PREFIX
@@ -110,7 +110,7 @@ def check_router_auth(
                     or depends_fn == current_curator_or_admin_user
                     or depends_fn == api_key_dep
                     or depends_fn == current_user_with_expired_token
-                    or depends_fn == current_second_level_limited_user
+                    or depends_fn == current_chat_accesssible_user
                     or depends_fn == control_plane_dep
                     or depends_fn == current_cloud_superuser
                 ):
